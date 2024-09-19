@@ -11,6 +11,8 @@ app.get('/', (req, res) => {
     res.render('home')  
 })
 
+app.use('/places', require('./controllers/places'));
+
 // Wildcard route for 404
 app.get('*', (req, res) => {
     res.render('error404')  
