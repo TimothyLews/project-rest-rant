@@ -1,7 +1,7 @@
 const React = require('react')
 const Def = require('../default')
 
-function new_form () {
+function new_form (data) {
     return (
         <Def>
             <main>
@@ -33,10 +33,29 @@ function new_form () {
                     <input className="form-control" id="cuisines" name="cuisines" required />
                 </div>
                 <input className="btn btn-primary" type="submit" value="Add Place" />
+                <div className="form-group">
+                 <label for="founded">Founded Year</label>
+                <input 
+                type="number"
+                className="form-control" 
+                id="founded" 
+                name="founded"
+                 value={new Date()/.getFullYear()}>
+                </div>
                 </form>
             </main>
         </Def>
     )
 }
+
+let sumRatings = data.place.comments.reduce((tot, c) => {
+  return tot + c.stars
+}, 0)
+let averageRating = sumRatings / data.place.comments.length
+rating = (
+  <h3>
+  {Math.round(averageRating)} stars
+  </h3>
+)
 
 module.exports = new_form
