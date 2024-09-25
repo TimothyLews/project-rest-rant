@@ -40,7 +40,7 @@ function new_form (data) {
                 className="form-control" 
                 id="founded" 
                 name="founded"
-                 value={new Date()/.getFullYear()}>
+                 value={new Date().getFullYear()}/>
                 </div>
                 </form>
             </main>

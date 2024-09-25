@@ -60,7 +60,8 @@ router.get('/:id', (req, res) => {
     console.log('err', err)
     res.render('error404')
   }
-  })
+  }
+})
 
 
 router.post('/:id/rant', (req, res) => {
