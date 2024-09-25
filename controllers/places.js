@@ -54,14 +54,14 @@ router.delete('/:id', (req, res) => {
 
 router.get('/:id', (req, res) => {
   db.Place.findById(req.params.id)
-  .then(place =>) {
+  .then(place =>any); {
     res.render('place/show', {place})
-  }
-  .catch(err => {
+  .catch(err =>any); {
     console.log('err', err)
     res.render('error404')
+  }
   })
-})
+
 
 router.post('/:id/rant', (req, res) => {
   res.send('GET /places/:id/rant stub')
