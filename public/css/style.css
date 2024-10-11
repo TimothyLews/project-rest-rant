@@ -1,6 +1,6 @@
 h1 {
     text-align: center;
-    color: cornflowerblue;
+    color: green;
   }
   nav {
     background-color: cornflowerblue;
@@ -27,7 +27,7 @@ nav a:hover {
     text-decoration: none;
 }
 body {
-    background-color: lightblue;
+    background-color: purple;
     text-align: center;
   }
   
