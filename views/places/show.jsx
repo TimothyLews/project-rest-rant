@@ -2,73 +2,139 @@ const React = require("react");
 const Def = require("../default");
 
 function show(data) {
-  let comments = (
-    <h3 className="inactive">
-      No comments yet!
-    </h3>
-  )
-  let rating = (
-    <h3 className="inactive">
-      Not yet rated
-    </h3>
-  )
-if (data.place.comments.length) {
-  let sumRatings = data.place.comments.reduce((total, c) => {
-    return total + c.stars
-  }, 0)
-  let averageRating = sumRatings / data.place.comments.length
-  rating = (
-    <h3>
-      {averageRating} stars
-    </h3>
-  )}
+  let comments = <h3 className="inactive">No comments yet!</h3>;
+  let rating = <h3 className="inactive">Not yet rated</h3>;
+  if (data.place.comments.length) {
+    let sumRatings = data.place.comments.reduce((tot, c) => {
+      return tot + c.stars;
+    }, 0);
+    let averageRating = Math.round(sumRatings / data.place.comments.length);
+    let stars = "";
+    for (let i = 0; i < averageRating; i++) {
+      stars += "⭐️";
+    }
+    rating = <h3>{stars}</h3>;
+    if (data.place.comments.length) {
+      let sumRatings = data.place.comments.reduce((tot, c) => {
+        return tot + c.stars;
+      }, 0);
+      let averageRating = Math.round(sumRatings / data.place.comments.length);
+      let stars = "";
+      for (let i = 0; i < averageRating; i++) {
+        stars += "⭐️";
+      }
+      rating = <h3>{stars}</h3>;
+    }
+
+    comments = data.place.comments.map((c) => {
+      return (
+        <div className="border col-sm-4">
+          <h2 className="rant">{c.rant ? "Rant! ðŸ˜¡" : "Rave! ðŸ˜»"}</h2>
+          <h4>{c.content}</h4>
+          <h3>
+            <strong>- {c.author}</strong>
+          </h3>
+          <h4>Rating: {c.stars}</h4>
+          <form
+            method="POST"
+            action={`/places/${data.place.id}/comment/${c.id}?_method=DELETE`}
+          >
+            <input
+              type="submit"
+              className="btn btn-danger"
+              value="Delete Comment"
+            />
+          </form>
+        </div>
+      );
+    });
+  }
   return (
     <Def>
       <main>
-        <br/><br/>
         <div className="row">
           <div className="col-sm-6">
-            <img id="show-image" src={props.place.pic} alt={props.place.name} />
+            <img id="show-image" src={data.place.pic} alt={data.place.name} />
           </div>
           <div className="col-sm-6">
-            <h1>{props.place.name}</h1>
-            <h2>Rated</h2>
+            <h1>{data.place.name}</h1>
+            <h2>Rating</h2>
             {rating}
-            <p>Not Rated</p>
+            <br />
             <h2>Description</h2>
-            <h2>
-              {props.place.showEstablished()}
-            </h2>
+            <h2>{data.place.showEstablished()}</h2>
 
-            <h3>
-              Serving {props.place.cuisines}
-            </h3>
-
+            <h3>Serving {data.place.cuisines}</h3>
           </div>
-        </div>
-        <br/><br/><br/>
-        <div className="row">
+          <div className="row">
+            <a
+              className="col-sm-1 edit-button"
+              href={`/places/${data.place.id}/edit`}
+            >
+              Edit
+            </a>
+            <form
+              method="POST"
+              action={`/places/${data.place.id}?_method=DELETE`}
+              className="col-sm-1 delete-form"
+            >
+              <button type="submit" className="btn btn-danger delete-button">
+                Delete
+              </button>
+            </form>
+          </div>
+          <br />
+          <br />
+          <hr />
           <h2>Comments</h2>
-          <p>no comments yet!</p>
+          {comments}
         </div>
-        <br/><br/>
-        <div className="row">
-          <a className="col-sm-1 edit-button"
-            href={`/places/${props.place.id}/edit`}
-          >
-            Edit
-          </a>
-          <form
-            method="POST"
-            action={`/places/${props.place.id}?_method=DELETE`}
-            className="col-sm-1 delete-form"
-          >
-            <button type="submit" className="btn btn-danger delete-button">
-              Delete
-            </button>
-          </form>
-        </div>
-        <br/>
+
+        <h2>Got Your Own Rant or Rave?</h2>
+        <form action={`/places/${data.place.id}/comment`} method="POST">
+          <div className="row">
+            <div className="form-group col-sm-12">
+              <label htmlFor="content">Content</label>
+              <textarea
+                id="content"
+                name="content"
+                className="form-control"
+              ></textarea>
+            </div>
+          </div>
+          <div className="row">
+            <div className="form-group col-sm-4">
+              <label htmlFor="author">Author</label>
+              <input id="author" name="author" className="form-control" />
+            </div>
+            <div className="form-group col-sm-4">
+              <label htmlFor="stars">Star Rating</label>
+              <input
+                type="range"
+                step="0.5"
+                min="1"
+                max="5"
+                id="stars"
+                name="stars"
+                className="form-control"
+              />
+            </div>
+            <div className="form-group col-sm-2">
+              <label htmlFor="rant">Rant?</label>
+              <input
+                type="checkbox"
+                id="rant"
+                name="rant"
+                className="form-control"
+              />
+            </div>
+          </div>
+          <input
+            type="submit"
+            className="btn btn-primary"
+            value="Add Comment"
+          />
+        </form>
       </main>
     </Def>
   );
