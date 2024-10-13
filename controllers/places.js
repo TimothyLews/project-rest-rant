@@ -1,92 +1,117 @@
-//const router = require("express").Router();
-const places = require("../models/places.js");
+const router = require("express").Router();
+const db = require("../models/");
 
-// GET /places
+//INDEX (view all places)
+
 router.get("/", (req, res) => {
-    res.render("places/index", { places });
+  db.Place.find()
+    .then((places) => {
+      res.render("places/index", { places });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.render("error404");
+    });
 });
+
+
+//CREATE (post new place to db)
+
+//NEW
+router.post("/", (req, res) => {
+  if (req.body.pic === "") {
+    req.body.pic = undefined;
+  }
+  if (req.body.city === "") {
+    req.body.city = undefined;
+  }
+  if (req.body.state === "") {
+    req.body.state = undefined;
+  }
+  db.Place.create(req.body)
+    .then(() => {
+      res.redirect("/places");
+    })
+    .catch((err) => {
+      if (err && err.name == "ValidationError") {
+        let message = "Validation Error: ";
+        for (var field in err.errors) {
+          message += `${field} was ${err.errors[field].value}. ${err.errors[field].message}\n`;
+        }
+        res.render("places/new", { message });
+      } else {
+        res.render("error404");
+      }
+    });
+}); 
+
+
+
+//NEW (view form to create new place)
 
 router.get("/new", (req, res) => {
-    res.render("places/new");
+  res.render("places/new");
 });
+
+
+
+//SHOW (view one place)
 
 router.get("/:id", (req, res) => {
-    //GET '/places/:id' Details about a particular page
-    let id = Number(req.params.id);
-    if (isNaN(id)) {
-        res.render("error404");
-    } else if (!places[id]) {
-        res.render("error404");
-    } else {
-        res.render("places/show", { place: places[id], id });
-    }
+  db.Place.findById(req.params.id)
+    .then((place) => {
+      res.render("places/show", { place });
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.render("error404");
+    });
 });
 
-router.post("/", (req, res) => {
-    if (!req.body.pic) {
-        // Default image if one is not provided
-        req.body.pic = "http://placekitten.com/400/400";
-    }
-    if (!req.body.city) {
-        req.body.city = "Anytown";
-    }
-    if (!req.body.state) {
-        req.body.state = "USA";
-    }
-    places.push(req.body);
-    res.redirect("/places");
+
+
+//UPDATE (update place in db)
+
+router.put("/:id", (req, res) => {
+  console.log(req.params.id);
+  db.Place.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    .then(() => {
+      res.redirect(`/places/${req.params.id}`);
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.render("error404");
+    });
 });
 
-//UPDATE
-router.put(`/:id`, (req, res) => {
-    let id = Number(req.params.id);
-    if (isNaN(id)) {
-        res.render("error404");
-    } else if (!places[id]) {
-        res.render("error404");
-    } else {
-        if (!req.body.pic) {
-            // Default image if one is not provided
-            req.body.pic = "http://placekitten.com/400/400";
-        }
-        if (!req.body.city) {
-            req.body.city = "Anytown";
-        }
-        if (!req.body.state) {
-            req.body.state = "USA";
-        }
-        //save the new data into places[id]
-        places[id] = req.body;
-        res.redirect(`/places/${id}`);
-    }
-});
 
-router.delete("/:id", (req, res) => {
-    let id = Number(req.params.id);
-    if (isNaN(id)) {
-        res.render("error404");
-    } else if (!places[id]) {
-        res.render("error404");
-    } else {
-        places.splice(id, 1);
-        res.redirect("/places");
-    }
-});
+
+//EDIT (view form to edit place)
 
 router.get("/:id/edit", (req, res) => {
-    let id = Number(req.params.id);
-    console.log(id);
-
-    if (isNaN(id)) {
-        res.render("error404");
-    } else if (!places[id]) {
-        res.render("error404");
-    } else {
-        res.render("places/edit", {
-            place: places[req.params.id],
-            index: req.params.id,
-        });
-    }
+  db.Place.findById(req.params.id)
+    .then((place) => {
+      res.render("places/edit", { place });
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.render("error404");
+    });
 });
+
+
+
+//DELETE (delete place from db)
+router.delete("/:id", (req, res) => {
+  db.Place.findByIdAndDelete(req.params.id)
+    .then(() => {
+      res.redirect("/places");
+    })
+    .catch((err) => {
+      console.log("err", err);
+      res.render("error404");
+    });
+});
+
 
 module.exports = router;
