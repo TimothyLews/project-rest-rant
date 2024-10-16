@@ -24,6 +24,7 @@ function new_form (data) {
                     <label htmlFor="city">City</label>
                     <input className="form-control" id="city" name="city" />
                 </div>
+                 
                 <div className="form-group">
                     <label htmlFor="state">State</label>
                     <input className="form-control" id="state" name="state" />
@@ -46,16 +47,6 @@ function new_form (data) {
             </main>
         </Def>
     )
+
 }
-
-let sumRatings = data.place.comments.reduce((tot, c) => {
-  return tot + c.stars
-}, 0)
-let averageRating = sumRatings / data.place.comments.length
-rating = (
-  <h3>
-  {Math.round(averageRating)} stars
-  </h3>
-)
-
 module.exports = new_form
