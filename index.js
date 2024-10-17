@@ -10,9 +10,14 @@ app.set('views', __dirname + '/views')
 app.set('view engine', 'jsx')
 app.engine('jsx', require('express-react-views').createEngine())
 app.use(express.static('public'))
+
+// Middleware
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0880c77cc9ca98cb87fb54fb34d2bce78b5ae10a
 
 // Controllers & Routes
 app.use('/places', require('./controllers/places'))
