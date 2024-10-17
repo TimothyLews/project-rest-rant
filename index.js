@@ -2,9 +2,9 @@
 require('dotenv').config()
 const express = require('express')
 const methodOverride = require('method-override')
+
 const app = express()
 
-// Express Settings
 // Express Settings
 app.set('views', __dirname + '/views')
 app.set('view engine', 'jsx')
@@ -14,10 +14,7 @@ app.use(express.static('public'))
 // Middleware
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
-<<<<<<< HEAD
 
-=======
->>>>>>> 0880c77cc9ca98cb87fb54fb34d2bce78b5ae10a
 
 // Controllers & Routes
 app.use('/places', require('./controllers/places'))
@@ -29,6 +26,7 @@ app.get('/', (req, res) => {
 app.get('*', (req, res) => {
     res.render('error404')
 })
+
 
 // Listen for Connections
 app.listen(process.env.PORT)
